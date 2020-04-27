@@ -6,6 +6,7 @@ scalaVersion in ThisBuild := "2.13.0"
 
 val macwire = "com.softwaremill.macwire" %% "macros" % "2.3.3" % "provided"
 val scalaTest = "org.scalatest" %% "scalatest" % "3.1.1" % Test
+val jsonJoda = "com.typesafe.play" %% "play-json-joda" % "2.7.4"
 
 lagomCassandraEnabled in ThisBuild := false
 lagomKafkaEnabled in ThisBuild := false
@@ -34,7 +35,7 @@ lazy val `task-manager` = (project in file("."))
   .aggregate(`task-manager-api`, `task-manager-impl`)
 
 lazy val `task-manager-api` = (project in file("task-manager-api"))
-  .settings(libraryDependencies ++= Seq(lagomScaladslApi))
+  .settings(libraryDependencies ++= Seq(lagomScaladslApi, jsonJoda))
 
 lazy val `task-manager-impl` = (project in file("task-manager-impl"))
   .enablePlugins(LagomScala)
