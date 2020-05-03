@@ -15,10 +15,10 @@ object TaskManagerService {
 }
 
 /**
-  * The remind-me service interface.
+  * The task manager service interface.
   * <p>
   * This describes everything that Lagom needs to know about how to serve and
-  * consume the RemindmeService.
+  * consume the TaskManagerService.
   */
 trait TaskManagerService extends Service {
 
@@ -37,18 +37,13 @@ trait TaskManagerService extends Service {
     named("task-manager-service")
       .withCalls(
         pathCall("/tasks/:id", getTask _),
-        pathCall("/tasks", getTasks _),
+        namedCall("/tasks", getTasks _),
         namedCall("/tasks", createTask _),
         pathCall("/tasks/:id", updateTask _),
         pathCall("/tasks/:id", deleteTask _)
       )
       .withTopics(
         topic(TaskManagerService.TOPIC_NAME, tasksTopic)
-          // Kafka partitions messages, messages within the same partition will
-          // be delivered in order, to ensure that all messages for the same user
-          // go to the same partition (and hence are delivered in order with respect
-          // to that user), we configure a partition key strategy that extracts the
-          // name as the partition key.
           .addProperty(
             KafkaProperties.partitionKeyStrategy,
             PartitionKeyStrategy[KTaskMessage](_ => "0")
