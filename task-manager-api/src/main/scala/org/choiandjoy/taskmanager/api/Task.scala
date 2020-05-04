@@ -33,17 +33,29 @@ case class Task(taskId: UUID,
 object Task extends JsDateTime {
   implicit val taskFmt: OFormat[Task] = Json.format[Task]
 
-//  def apply(createTask: CreateTask): Task =
-//    Task(
-//      UUID.randomUUID(),
-//      createTask.userId,
-//      createTask.name,
-//      false,
-//      0,
-//      createTask.iterations,
-//      DateTime.now(),
-//      DateTime.now().plusDays(createTask.iterations.headOption.getOrElse(0))
-//    )
+  def apply(createTask: CreateTask): Task =
+    Task(
+      UUID.randomUUID(),
+      createTask.userId,
+      createTask.name,
+      false,
+      0,
+      createTask.iterations,
+      DateTime.now(),
+      DateTime.now().plusDays(createTask.iterations.headOption.getOrElse(0))
+    )
+
+  def apply(taskId: UUID, updateTask: UpdateTask): Task =
+    Task(
+      taskId,
+      updateTask.userId,
+      updateTask.name,
+      false,
+      0,
+      updateTask.iterations,
+      DateTime.now(),
+      DateTime.now().plusDays(updateTask.iterations.headOption.getOrElse(0))
+    )
 }
 
 case class CreateTask(userId: UUID, name: String, iterations: Seq[Int])
@@ -52,7 +64,8 @@ object CreateTask {
   implicit val createTaskJson: OFormat[CreateTask] = Json.format[CreateTask]
 }
 
-case class UpdateTask(name: String,
+case class UpdateTask(userId: UUID,
+                      name: String,
                       complete: Boolean,
                       iterations: Seq[Int],
                       dueDate: DateTime)

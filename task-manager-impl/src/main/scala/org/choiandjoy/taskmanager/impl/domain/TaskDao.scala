@@ -2,7 +2,7 @@ package org.choiandjoy.taskmanager.impl.domain
 
 import java.util.UUID
 
-import scala.concurrent.ExecutionContext
+import org.choiandjoy.taskmanager.api.Task
 
 class TaskDao {
   import TaskTables._
@@ -16,8 +16,18 @@ class TaskDao {
       .headOption
   }
 
-  def upsertTask(task: TaskRow) = {
+  def getTasks =
+    tasks.result
+
+  def upsertTask(task: Task) = {
     tasks.insertOrUpdate(task)
+  }
+
+  def deleteTask(id: UUID) = {
+    tasks
+      .filter(_.id === id)
+      .take(1)
+      .delete
   }
 
 }
