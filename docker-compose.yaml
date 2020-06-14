@@ -1,0 +1,15 @@
+version: '2.2'
+
+services:
+
+  task-manager-service:
+    image: remind-me/task-manager-service
+    container_name: remind-me
+    env_file:
+      - docker.env
+    environment:
+      - LOGGER_ROOT=INFO
+      - LOGGER_COM_DRIVE=DEBUG
+    ports:
+      - "8080:8080"
+    mem_limit: 150M
