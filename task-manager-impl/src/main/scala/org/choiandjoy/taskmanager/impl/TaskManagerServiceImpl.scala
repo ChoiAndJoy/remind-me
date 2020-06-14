@@ -41,7 +41,7 @@ class TaskManagerServiceImpl(clusterSharding: ClusterSharding,
 
   override def createTask: ServiceCall[CreateTask, Done] = {
     request: CreateTask =>
-      db.run(taskDao.upsertTask(Task.apply(request))).map(_ => Done)
+      db.run(taskDao.upsertTask(Task.createTask(request))).map(_ => Done)
   }
 
   override def deleteTask(id: UUID): ServiceCall[NotUsed, Done] = {
@@ -51,7 +51,7 @@ class TaskManagerServiceImpl(clusterSharding: ClusterSharding,
 
   override def updateTask(id: UUID): ServiceCall[UpdateTask, Done] = {
     request: UpdateTask =>
-      db.run(taskDao.upsertTask(Task.apply(id, request))).map(_ => Done)
+      db.run(taskDao.upsertTask(Task.updateTask(id, request))).map(_ => Done)
   }
 
   override def tasksTopic: Topic[KTaskMessage] = ???

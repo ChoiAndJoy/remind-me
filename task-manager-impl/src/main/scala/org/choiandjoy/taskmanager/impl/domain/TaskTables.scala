@@ -29,7 +29,7 @@ object TaskTables {
 
     def currentIndexIterations = column[Int]("current_index_iterations")
 
-    def iterations = column[String]("iterations")
+    def iterations = column[List[Int]]("iterations")
 
     def dueDate = column[DateTime]("due_date")
 
@@ -45,7 +45,8 @@ object TaskTables {
         iterations,
         dueDate,
         nextDueDate
-      ).mapTo[Task]
+      ) <> ((Task.apply _).tupled, Task.unapply)
+
   }
 
   lazy val tasks = TableQuery[TaskTable]

@@ -6,14 +6,12 @@ import java.util.UUID
 import org.joda.time.DateTime
 import play.api.libs.json._
 
-import scala.collection.immutable.Seq
-
 case class Task(taskId: UUID,
                 userId: UUID,
                 name: String,
                 completed: Boolean,
                 currentIteration: Int,
-                iterations: Seq[Int] = Seq(1, 3, 5),
+                iterations: List[Int],
                 dueDate: DateTime,
                 nextDueDate: DateTime)
 //{
@@ -30,10 +28,10 @@ case class Task(taskId: UUID,
 //    )
 //}
 
-object Task extends JsDateTime {
+object Task extends DateTimeJsFormat {
   implicit val taskFmt: OFormat[Task] = Json.format[Task]
 
-  def apply(createTask: CreateTask): Task =
+  def createTask(createTask: CreateTask): Task =
     Task(
       UUID.randomUUID(),
       createTask.userId,
@@ -45,7 +43,7 @@ object Task extends JsDateTime {
       DateTime.now().plusDays(createTask.iterations.headOption.getOrElse(0))
     )
 
-  def apply(taskId: UUID, updateTask: UpdateTask): Task =
+  def updateTask(taskId: UUID, updateTask: UpdateTask): Task =
     Task(
       taskId,
       updateTask.userId,
@@ -58,7 +56,7 @@ object Task extends JsDateTime {
     )
 }
 
-case class CreateTask(userId: UUID, name: String, iterations: Seq[Int])
+case class CreateTask(userId: UUID, name: String, iterations: List[Int])
 
 object CreateTask {
   implicit val createTaskJson: OFormat[CreateTask] = Json.format[CreateTask]
@@ -67,10 +65,10 @@ object CreateTask {
 case class UpdateTask(userId: UUID,
                       name: String,
                       complete: Boolean,
-                      iterations: Seq[Int],
+                      iterations: List[Int],
                       dueDate: DateTime)
 
-object UpdateTask extends JsDateTime {
+object UpdateTask extends DateTimeJsFormat {
   implicit val updateTaskJs: OFormat[UpdateTask] = Json.format[UpdateTask]
 }
 
